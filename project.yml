@@ -1,0 +1,120 @@
+name: Shake
+options:
+  defaultConfig: Debug
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+configs:
+  Debug: debug
+  Release: release
+  CloudDevelopment: debug
+  CloudProduction: release
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: YES
+    SHAKE_CLOUD_ENABLED: NO
+  configs:
+    CloudDevelopment:
+      SHAKE_CLOUD_ENABLED: YES
+      SHAKE_PUSH_ENVIRONMENT: development
+      SHAKE_CLOUD_ENVIRONMENT: Development
+    CloudProduction:
+      SHAKE_CLOUD_ENABLED: YES
+      SHAKE_PUSH_ENVIRONMENT: production
+      SHAKE_CLOUD_ENVIRONMENT: Production
+packages:
+  ShakeLibraries:
+    path: .
+targetTemplates:
+  ShakeApp:
+    type: application
+    dependencies:
+      - package: ShakeLibraries
+        product: ShakeCore
+      - package: ShakeLibraries
+        product: ShakeUI
+    settings:
+      base:
+        INFOPLIST_KEY_CFBundleDisplayName: 拾刻
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.lifestyle
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+targets:
+  Shake-iOS:
+    templates: [ShakeApp]
+    platform: iOS
+    sources:
+      - path: Apps/iOS
+        excludes: ["Shake.entitlements", "Info.plist"]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.shake.lifelog.ios
+        PRODUCT_NAME: Shake
+        INFOPLIST_FILE: Apps/iOS/Info.plist
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: 用于手动将拾刻记录和照片同步到同一 Wi-Fi 下的 Mac。
+        INFOPLIST_KEY_NSCameraUsageDescription: 用于拍照记录。照片分类在设备上进行。
+      configs:
+        CloudDevelopment:
+          CODE_SIGN_ENTITLEMENTS: Apps/iOS/Shake.entitlements
+        CloudProduction:
+          CODE_SIGN_ENTITLEMENTS: Apps/iOS/Shake.entitlements
+  Shake-macOS:
+    templates: [ShakeApp]
+    platform: macOS
+    sources:
+      - path: Apps/macOS
+        excludes: ["Shake.entitlements", "Info.plist"]
+      - path: Skills/shake-life-log
+        optional: true
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.shake.lifelog.mac
+        PRODUCT_NAME: Shake
+        INFOPLIST_FILE: Apps/macOS/Info.plist
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: 用于接收同一 Wi-Fi 下 iPhone 发送的拾刻记录和照片。
+      configs:
+        CloudDevelopment:
+          CODE_SIGN_ENTITLEMENTS: Apps/macOS/Shake.entitlements
+        CloudProduction:
+          CODE_SIGN_ENTITLEMENTS: Apps/macOS/Shake.entitlements
+  Shake-iOS-UI-Tests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: Tests/ShakeIOSUITests
+        excludes: ["Fixtures"]
+    dependencies:
+      - target: Shake-iOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.shake.lifelog.ios.uitests
+  Shake-macOS-UI-Tests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources: [Tests/ShakeMacUITests]
+    dependencies:
+      - target: Shake-macOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cn.shake.lifelog.mac.uitests
+schemes:
+  Shake-iOS:
+    build:
+      targets:
+        Shake-iOS: all
+    test:
+      targets: [Shake-iOS-UI-Tests]
+  Shake-macOS:
+    build:
+      targets:
+        Shake-macOS: all
+    test:
+      targets: [Shake-macOS-UI-Tests]

@@ -1,0 +1,4 @@
+interface:
+  display_name: "拾刻生活记录"
+  short_description: "从拾刻的图文记录回顾饮食、体重、心情、知识和运动，比较长期变化"
+  default_prompt: "用 $shake-life-log 回顾我上周的拾刻记录，找出相较前一周最值得留意的变化。"

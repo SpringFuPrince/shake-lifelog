@@ -1,0 +1,60 @@
+.DS_Store
+.build/
+DerivedData/
+.tools/
+*.xcuserstate
+xcuserdata/
+Server/.data/
+MCP/.data/
+*.shake
+.env
+
+# SwiftPM and Xcode build output
+/build/
+*.xcarchive/
+*.dSYM/
+*.app/
+*.ipa
+*.dmg
+*.pkg
+
+# Machine-local configuration and signing material
+.env.*
+!.env.example
+*.p8
+*.p12
+*.pfx
+*.key
+*.pem
+*.mobileprovision
+*.provisionprofile
+
+# Local Shake data copied into the worktree
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-wal
+*.db-shm
+/Media/
+/Photos/
+/Backups/
+/Exports/
+*.zip
+.shake-export-*/
+
+# Loose photos at the repository root
+/*.jpg
+/*.jpeg
+/*.png
+/*.heic
+/*.webp
+/*.JPG
+/*.JPEG
+/*.PNG
+/*.HEIC
+/*.WEBP
+
+# Internal work notes kept locally
+/docs/superpowers/plans/
